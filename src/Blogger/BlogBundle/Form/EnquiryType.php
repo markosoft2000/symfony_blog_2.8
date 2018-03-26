@@ -15,7 +15,7 @@ class EnquiryType extends AbstractType
     {
         $builder->add('name', TextType::class);
         $builder->add('email', EmailType::class);
-        $builder->add('subject', TextType::class);
+        $builder->add('subject', TextType::class/*, ['required' => false]*/);
         $builder->add('body', TextareaType::class);
     }
 
