@@ -2,6 +2,8 @@
 
 namespace Blogger\BlogBundle\Controller;
 
+use Blogger\BlogBundle\Entity\Post;
+use Blogger\BlogBundle\Entity\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Blogger\BlogBundle\Entity\Enquiry;
@@ -11,7 +13,16 @@ class PageController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('BloggerBlogBundle:Page:index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var PostRepository $postRepository */
+        $postRepository = $em->getRepository('BloggerBlogBundle:Post');
+        /** @var Post[] $posts */
+        $posts = $postRepository->getLatestPosts();
+
+        return $this->render('BloggerBlogBundle:Page:index.html.twig', [
+            'posts' => $posts
+        ]);
     }
 
     public function aboutAction()

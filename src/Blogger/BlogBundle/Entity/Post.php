@@ -3,9 +3,10 @@
 namespace Blogger\BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Blogger\BlogBundle\Entity\Repository\PostRepository")
  * @ORM\Table(name="post")
  * @ORM\HasLifecycleCallbacks
  */
@@ -43,6 +44,9 @@ class Post
      */
     protected $tags;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
+     */
     protected $comments;
 
     /**
@@ -57,6 +61,8 @@ class Post
 
     public function __construct()
     {
+        $this->comments = new ArrayCollection();
+
         $this->setCreated(new \DateTime());
         $this->setUpdated(new \DateTime());
     }
@@ -141,11 +147,15 @@ class Post
     /**
      * Get post
      *
-     * @return string 
+     * @param int $length
+     * @return string
      */
-    public function getPost()
+    public function getPost($length = null)
     {
-        return $this->post;
+        if (false === is_null($length) && $length > 0)
+            return substr($this->post, 0, $length);
+        else
+            return $this->post;
     }
 
     /**
@@ -238,5 +248,44 @@ class Post
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Add comment
+     *
+     * @param Comment $comment
+     *
+     * @return Post
+     */
+    public function addComment(Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param Comment $comment
+     */
+    public function removeComment(Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    public function __toString()
+    {
+        return $this->getTitle();
     }
 }
