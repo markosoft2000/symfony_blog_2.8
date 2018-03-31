@@ -18,7 +18,7 @@ class PostController extends Controller
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAction($id)
+    public function showAction($id/*, $slug, $comments*/)
     {
         $em = $this->getDoctrine()->getManager();
 

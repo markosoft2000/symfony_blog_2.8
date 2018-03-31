@@ -35,6 +35,11 @@ class Post
     protected $post;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $slug;
+
+    /**
      * @ORM\Column(type="string", length=20)
      */
     protected $image;
@@ -253,11 +258,11 @@ class Post
     /**
      * Add comment
      *
-     * @param \Blogger\BlogBundle\Entity\Comment $comment
+     * @param Comment $comment
      *
      * @return Post
      */
-    public function addComment(\Blogger\BlogBundle\Entity\Comment $comment)
+    public function addComment(Comment $comment)
     {
         $this->comments[] = $comment;
 
@@ -267,9 +272,9 @@ class Post
     /**
      * Remove comment
      *
-     * @param \Blogger\BlogBundle\Entity\Comment $comment
+     * @param Comment $comment
      */
-    public function removeComment(\Blogger\BlogBundle\Entity\Comment $comment)
+    public function removeComment(Comment $comment)
     {
         $this->comments->removeElement($comment);
     }
@@ -282,5 +287,10 @@ class Post
     public function getComments()
     {
         return $this->comments;
+    }
+
+    public function __toString()
+    {
+        return $this->getTitle();
     }
 }

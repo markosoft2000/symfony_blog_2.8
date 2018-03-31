@@ -35,6 +35,11 @@ class Post
     protected $post;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $slug;
+
+    /**
      * @ORM\Column(type="string", length=20)
      */
     protected $image;
@@ -94,6 +99,7 @@ class Post
     public function setTitle($title)
     {
         $this->title = $title;
+        $this->setSlug($this->title);
 
         return $this;
     }
@@ -287,5 +293,53 @@ class Post
     public function __toString()
     {
         return $this->getTitle();
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Post
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $this->slugify($slug);
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $text
+     * @return string
+     */
+    public function slugify($text)
+    {
+        $text = preg_replace('#[^\\pL\d]+#u', '-', $text);
+        $text = trim($text, '-');
+
+        // transliterate
+        if (function_exists('iconv')) {
+            $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+        }
+
+        $text = strtolower($text);
+        $text = preg_replace('#[^-\w]+#', '', $text);
+
+        if (empty($text)) {
+            return 'n-a';
+        }
+
+        return $text;
     }
 }

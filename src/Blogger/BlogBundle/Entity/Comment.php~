@@ -3,10 +3,12 @@
 namespace Blogger\BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class Comment
- *@ORM\Entity(repositoryClass="Blogger\BlogBundle\Entity\Repository\CommentRepository")
+ * @ORM\Entity(repositoryClass="Blogger\BlogBundle\Entity\Repository\CommentRepository")
  * @ORM\Table(name="comment")
  * @ORM\HasLifecycleCallbacks
  */
@@ -199,11 +201,11 @@ class Comment
     /**
      * Set post
      *
-     * @param \Blogger\BlogBundle\Entity\Post $post
+     * @param Post $post
      *
      * @return Comment
      */
-    public function setPost(\Blogger\BlogBundle\Entity\Post $post = null)
+    public function setPost(Post $post = null)
     {
         $this->post = $post;
 
@@ -213,10 +215,21 @@ class Comment
     /**
      * Get post
      *
-     * @return \Blogger\BlogBundle\Entity\Post
+     * @return Post
      */
     public function getPost()
     {
         return $this->post;
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('user', new NotBlank([
+            'message' => 'You must enter your name'
+        ]));
+
+        $metadata->addPropertyConstraint('comment', new NotBlank([
+            'message' => 'You must enter a comment'
+        ]));
     }
 }

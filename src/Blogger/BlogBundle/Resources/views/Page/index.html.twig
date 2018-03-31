@@ -6,18 +6,19 @@
         <article class="post">
             <div class="date"><time datetime="{{ post.created|date('c') }}">{{ post.created|date('l, F j, Y') }}</time></div>
             <header>
-                <h2><a href="{{ path('BloggerBlogBundle_post_show', { 'id': post.id }) }}">{{ post.title }}</a></h2>
+                <h2><a href="{{ path('BloggerBlogBundle_post_show', { 'id': post.id, 'slug': post.slug }) }}">{{ post.title }}</a></h2>
             </header>
 
             <img src="{{ asset(['images/', post.image]|join) }}" />
             <div class="snippet">
                 <p>{{ post.post(500) }}</p>
-                <p class="continue"><a href="{{ path('BloggerBlogBundle_post_show', { 'id': post.id }) }}">Continue reading...</a></p>
+                <p class="continue"><a href="{{ path('BloggerBlogBundle_post_show', { 'id': post.id, 'slug': post.slug }) }}">Continue reading...</a></p>
             </div>
 
             <footer class="meta">
-                <p>Comments: -</p>
-                <p>Posted by <span class="highlight">{{post.author}}</span> at {{ post.created|date('h:iA') }}</p>
+                <p>Comments: <a href="{{ path('BloggerBlogBundle_post_show', { 'id': post.id, 'slug': post.slug }) }}#comments"
+                    target="_blank">{{ post.comments|length }}</a></p>
+                <p>Posted by <span class="highlight">{{ post.author }}</span> at {{ post.created|date('h:iA') }}</p>
                 <p>Tags: <span class="highlight">{{ post.tags }}</span></p>
             </footer>
         </article>

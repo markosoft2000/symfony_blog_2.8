@@ -3,6 +3,7 @@
 namespace Blogger\BlogBundle\Controller;
 
 use Blogger\BlogBundle\Entity\Post;
+use Blogger\BlogBundle\Entity\Repository\CommentRepository;
 use Blogger\BlogBundle\Entity\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,25 @@ class PageController extends Controller
 
         return $this->render('BloggerBlogBundle:Page:index.html.twig', [
             'posts' => $posts
+        ]);
+    }
+
+    public function sidebarAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var PostRepository $postRepo */
+        $postRepo = $em->getRepository('BloggerBlogBundle:Post');
+        $tags = $postRepo->getTags();
+        $tagWeights = $postRepo ->getTagWeights($tags);
+
+        $commentLimit   = $this->container->getParameter('blogger_blog.comments.latest_comment_limit');
+        /** @var CommentRepository $commentRepo */
+        $commentRepo = $em->getRepository('BloggerBlogBundle:Comment');
+        $latestComments = $commentRepo->getLatestComments($commentLimit);
+
+        return $this->render('BloggerBlogBundle:Page:sidebar.html.twig', [
+            'latestComments'    => $latestComments,
+            'tags'              => $tagWeights
         ]);
     }
 
@@ -65,7 +85,5 @@ class PageController extends Controller
         return $this->render('BloggerBlogBundle:Page:contact.html.twig', [
             'form' => $form->createView()
         ]);
-
-
     }
 }

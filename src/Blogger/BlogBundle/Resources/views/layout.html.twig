@@ -1,13 +1,29 @@
 {# src/Blogger/BlogBundle/Resources/views/layout.html.twig #}
 {# php app/console assets:install web --symlink #}
+{# php app/console assetic:dump #}
 
 {% extends '::base.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link href="{{ asset('bundles/bloggerblog/css/blog.css') }}" type="text/css" rel="stylesheet" />
+
+    {% stylesheets
+    '@BloggerBlogBundle/Resources/public/css/*'
+    output='css/blogger.css'
+    filter='?yui_css'
+    %}{#debug=false#}
+        <link href="{{ asset_url }}" rel="stylesheet" media="screen" />
+    {% endstylesheets %}
 {% endblock %}
 
 {% block sidebar %}
-    Sidebar content
+    {{ render(controller('BloggerBlogBundle:Page:sidebar' )) }}
 {% endblock %}
+
+{#
+{% javascripts
+    '@BloggerBlogBundle/Resources/public/js/*'
+%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+#}
